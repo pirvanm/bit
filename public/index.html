@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <script src="https://unpkg.com/vue-form-wizard/dist/vue-form-wizard.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.css">
+
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/jquery.steps.css">
+    <link rel="stylesheet" href="css/site.min.css">
+
+    <link rel="stylesheet" href="https://unpkg.com/vue-form-wizard/dist/vue-form-wizard.min.css">
+    <script src="https://unpkg.com/vue-form-wizard/dist/vue-form-wizard.js"></script>
+    <script src="https://unpkg.com/vue@2.6.6/dist/vue.min.js"></script>
+    <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
+    <link rel="stylesheet"
+          href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
+
+
+    <link rel="stylesheet" href="https://unpkg.com/vue-form-wizard/dist/vue-form-wizard.min.css">
+    <script src="https://unpkg.com/vue-form-wizard/dist/vue-form-wizard.js"></script>
+    <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
+<body>
+<noscript>
+    <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+</noscript>
+<div id="app"></div>
+<!-- built files will be auto injected -->
+</body>
+<script src="js/form-wizard.js"></script>
+<script src="js/jquery.steps.js"></script>
+<script src="js/jquery.validate.js"></script>
+<script src="js/libscripts.bundle.js"></script>
+<script src="js/mainscripts.bundle.js"></script>
+<script src="js/vendorscripts.bundle.js"></script>
+<script src="js/bootstrap-datepicker.js"></script>
+</html>
+
+<script>
+    $(function () {
+        //Horizontal form basic
+        $('#wizard_horizontal_icon').steps({
+            headerTag: 'h2',
+            bodyTag: 'section',
+            transitionEffect: 'slideLeft',
+            onInit: function (event, currentIndex) {
+                setButtonWavesEffect(event);
+            },
+            onStepChanged: function (event, currentIndex, priorIndex) {
+                setButtonWavesEffect(event);
+            }
+        });
+
+        //Horizontal form basic
+        $('#wizard_horizontal').steps({
+            headerTag: 'h2',
+            bodyTag: 'section',
+            transitionEffect: 'slideLeft',
+            onInit: function (event, currentIndex) {
+                setButtonWavesEffect(event);
+            },
+            onStepChanged: function (event, currentIndex, priorIndex) {
+                setButtonWavesEffect(event);
+            }
+        });
+
+        //Vertical form basic
+        $('#wizard_vertical').steps({
+            headerTag: 'h2',
+            bodyTag: 'section',
+            transitionEffect: 'slideLeft',
+            stepsOrientation: 'vertical',
+            onInit: function (event, currentIndex) {
+                setButtonWavesEffect(event);
+            },
+            onStepChanged: function (event, currentIndex, priorIndex) {
+                setButtonWavesEffect(event);
+            }
+        });
+
+        //Advanced form with validation
+        var form = $('#wizard_with_validation').show();
+        form.steps({
+            headerTag: 'h3',
+            bodyTag: 'fieldset',
+            transitionEffect: 'slideLeft',
+            onStepChanging: function (event, currentIndex, newIndex) {
+                if (currentIndex > newIndex) { return true; }
+
+                if (currentIndex < newIndex) {
+                    form.find('.body:eq(' + newIndex + ') label.error').remove();
+                    form.find('.body:eq(' + newIndex + ') .error').removeClass('error');
+                }
+
+                form.validate().settings.ignore = ':disabled,:hidden';
+                return form.valid();
+            },
+            onStepChanged: function (event, currentIndex, priorIndex) {
+                setButtonWavesEffect(event);
+            },
+            onFinishing: function (event, currentIndex) {
+                form.validate().settings.ignore = ':disabled';
+                return form.valid();
+            },
+            onFinished: function (event, currentIndex) {
+                swal("Good job!", "Submitted!", "success");
+            }
+        });
+
+        form.validate({
+            highlight: function (input) {
+                $(input).parents('.form-line').addClass('error');
+            },
+            unhighlight: function (input) {
+                $(input).parents('.form-line').removeClass('error');
+            },
+            errorPlacement: function (error, element) {
+                $(element).parents('.form-group').append(error);
+            },
+            rules: {
+                'confirm': {
+                    equalTo: '#password'
+                }
+            }
+        });
+    });
+
+    function setButtonWavesEffect(event) {
+        $(event.currentTarget).find('[role="menu"] li a').removeClass('');
+        $(event.currentTarget).find('[role="menu"] li:not(.disabled) a').addClass('');
+    }
+</script>
